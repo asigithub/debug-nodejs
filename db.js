@@ -3,7 +3,10 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize('gamedb', 'postgres', '123456', {
     host: 'localhost',
     port: '5433',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    define: {
+      timestamps: false
+    }
 })
 
 try {
