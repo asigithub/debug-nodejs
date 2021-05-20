@@ -1,7 +1,7 @@
 var router = require('express').Router();
-var Game = require('../db').import('../models/game');
+var Game = require('../models/game');
 
-router.get('/all', (req, res) => {
+router.get('/all', (req, res) => {console.log('werwrwer');
     Game.findAll({ where: { owner_id: req.user.id } })
         .then(
             function findSuccess(data) {
@@ -15,8 +15,9 @@ router.get('/all', (req, res) => {
                 res.status(500).json({
                     message: "Data not found"
                 })
-            }
-        )
+            },
+        );
+    return res.status(200).send('hello');
 })
 
 router.get('/:id', (req, res) => {
@@ -113,4 +114,4 @@ router.delete('/remove/:id', (req, res) => {
     )
 })
 
-module.exports = routers;
+module.exports = router;
