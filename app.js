@@ -7,7 +7,7 @@ var user = require('./controllers/usercontroller');
 //var game = require('./controllers/gamecontroller');
 
 
-db.sync({ force: true }).then(()=>{
+db.sync(/*{ force: true }*/).then(()=>{
     app.listen(3000, function(){
       console.log("Сервер ожидает подключения...");
     });
