@@ -12,20 +12,15 @@ module.exports = function(sequelize, DataTypes) {
 
         passwordHash: {
             type: DataTypes.STRING,
-            validate: {
-                notNull: {
-                  msg: 'Please enter your name'
-                }
-              }
+            allowNull: false,
         },
 
         email: {
             type: DataTypes.STRING,
-            //allowNull: false,
+            allowNull: false,
             validate: {
-                isEmail: false
+                isEmail: true
             }
         }
-    });
-    sequelize.models.User;
+    })
 }

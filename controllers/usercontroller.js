@@ -4,31 +4,40 @@ var jwt = require('jsonwebtoken');
 
 var User = require('../db').import('../models/user');
 
-router.post('/signup',(req, res) => {
-const reqUser= JSON.parse(req.query.user);
-console.log(reqUser);
-    const user = User.create({
-        full_name: reqUser.full_name,
-        username: reqUser.username,
-        passwordhash: bcrypt.hashSync(String(reqUser.password), 10),
-        email: reqUser.email,
-    });
-    if(user) {
-        let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
-        res.status(200).json({
-            user: user,
-            token: token
+router.post('/signup', (req, res) => {
+    User.create({
+        full_name: req.body.user.full_name,
+        username: req.body.user.username,
+        passwordHash: bcrypt.hashSync(req.body.user.password, 10),
+        email: req.body.user.email,
+    })
+        .then( user => {
+            function signupSuccess(user) {
+                let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
+                res.status(200).json({
+                    user: user,
+                    token: token
+                })
+            }
+
+                signupSuccess(user);
+
         })
-    }else{
-        res.status(500).send(err.message);
-    }
+        .catch(err => {
+
+            function signupFail(err) {
+                res.status(500).send(err.message)
+            }
+
+            signupFail(err);
+
+        })
 })
 
 router.post('/signin', (req, res) => {
-    const reqUser= JSON.parse(req.query.user); console.log(reqUser, '!!!!!!!!!!!!!!!!!!!!!!');
-    User.findOne({ where: { username: reqUser.username } }).then(user => {
+    User.findOne({ where: { username: req.body.user.username } }).then(user => {
         if (user) {
-            bcrypt.compare(reqUser.password, user.passwordHash, function (err, matches) {
+            bcrypt.compare(req.body.user.password, user.passwordHash, function (err, matches) {
                 if (matches) {
                     var token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
                     res.json({
@@ -45,6 +54,7 @@ router.post('/signin', (req, res) => {
         }
 
     })
+    
 })
 
 module.exports = router;
